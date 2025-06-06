@@ -4,15 +4,19 @@ const Account = require('./Account.js'); // Assuming Account.js exports the Acco
 
 
 
-sign.use(express.json());
-
+sign.use(express.json()); 
 
 sign.post("/save-name",async(req,res)=>{
     try{
       const {name,pass} = req.body;
-      
       console.log("Received data:", name, pass);
 
+      acc = await Account.findOne({name: name});
+      if(acc){
+        res.json('User already exists');
+        return;
+      }
+      
       var acc = new Account({name, pass});
       await acc.save();  
       res.json({message: "User saved successfully"});
